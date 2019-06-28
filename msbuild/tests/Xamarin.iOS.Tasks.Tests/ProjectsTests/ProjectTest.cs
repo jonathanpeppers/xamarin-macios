@@ -34,7 +34,7 @@ namespace Xamarin.iOS.Tasks
 			SetupEngine ();
 		}
 
-		public string BuildProject (string appName, string platform, string config, int expectedErrorCount = 0, bool clean = true)
+		public string BuildProject (string appName, string platform, string config, int expectedErrorCount = 0, bool clean = true, bool restore = false)
 		{
 			var mtouchPaths = SetupProjectPaths (appName, "../", true, platform, config);
 			var csproj = mtouchPaths["project_csprojpath"];
@@ -68,6 +68,10 @@ namespace Xamarin.iOS.Tasks
 			}
 
 			proj = SetupProject (Engine, mtouchPaths.ProjectCSProjPath);
+			if (restore) {
+				RunTarget (proj, "Restore", expectedErrorCount);
+			}
+
 			RunTarget (proj, "Build", expectedErrorCount);
 
 			if (expectedErrorCount > 0)
